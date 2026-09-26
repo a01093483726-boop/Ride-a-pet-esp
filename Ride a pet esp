@@ -5,31 +5,31 @@ local CoreGui = game:GetService("CoreGui")
 local LocalPlayer = Players.LocalPlayer
 
 -- 기존에 실행 중이던 ESP 연결 및 GUI 청소
-if _G.RideAPetRareEggESPConnection then
-    _G.RideAPetRareEggESPConnection:Disconnect()
-    _G.RideAPetRareEggESPConnection = nil
+if _G.RideAPet10kRareESPConnection then
+    _G.RideAPet10kRareESPConnection:Disconnect()
+    _G.RideAPet10kRareESPConnection = nil
 end
 
 pcall(function()
-    if CoreGui:FindFirstChild("RideAPetRareEggESPContainer") then
-        CoreGui.RideAPetEggESPContainer:Destroy()
+    if CoreGui:FindFirstChild("RideAPet10kRareESPContainer") then
+        CoreGui.RideAPet10kRareESPContainer:Destroy()
     end
 end)
 
 -- 죽어도 안 사라지게 CoreGui 및 ResetOnSpawn 처리
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "RideAPetRareEggESPContainer"
+ScreenGui.Name = "RideAPet10kRareESPContainer"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = CoreGui
 
 -- [1] 우측 상단 ON/OFF 스위치 버튼 생성 (드래그 가능)
 local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0, 130, 0, 45)
-toggleButton.Position = UDim2.new(0.83, 0, 0.12, 0)
+toggleButton.Size = UDim2.new(0, 140, 0, 45)
+toggleButton.Position = UDim2.new(0.82, 0, 0.12, 0)
 toggleButton.BackgroundColor3 = Color3.fromRGB(80, 20, 20)
 toggleButton.BorderSizePixel = 2
 toggleButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
-toggleButton.Text = "희귀 알 ESP: OFF"
+toggleButton.Text = "10000 Stud 희귀알: OFF"
 toggleButton.TextColor3 = Color3.fromRGB(255, 60, 60)
 toggleButton.TextSize = 11
 toggleButton.Font = Enum.Font.GothamBold
@@ -68,21 +68,21 @@ end
 toggleButton.MouseButton1Click:Connect(function()
     isESPOn = not isESPOn
     if isESPOn then
-        toggleButton.Text = "희귀 알 ESP: ON\n(Cherub/Solaris/Blackhole)"
+        toggleButton.Text = "10000 Stud 희귀알: ON\n(Cherub/Solaris/Blackhole)"
         toggleButton.TextColor3 = Color3.fromRGB(60, 255, 60)
         toggleButton.BackgroundColor3 = Color3.fromRGB(20, 80, 20)
-        print("희귀 알 ESP 켜짐")
+        print("10000 Stud 희귀알 ESP 켜짐")
     else
-        toggleButton.Text = "희귀 알 ESP: OFF"
+        toggleButton.Text = "10000 Stud 희귀알: OFF"
         toggleButton.TextColor3 = Color3.fromRGB(255, 60, 60)
         toggleButton.BackgroundColor3 = Color3.fromRGB(80, 20, 20)
         clearAllESP()
-        print("희귀 알 ESP 꺼짐")
+        print("10000 Stud 희귀알 ESP 꺼짐")
     end
 end)
 
--- [2] 매 프레임 지정된 희귀 알들만 5000미터 범위 내에서 정밀 탐색
-_G.RideAPetRareEggESPConnection = RunService.RenderStepped:Connect(function()
+-- [2] 매 프레임 cherub, solaris, blackhole 알을 10000 Stud 범위 내에서 정밀 탐색
+_G.RideAPet10kRareESPConnection = RunService.RenderStepped:Connect(function()
     if not isESPOn then return end
 
     local char = LocalPlayer.Character
@@ -96,10 +96,11 @@ _G.RideAPetRareEggESPConnection = RunService.RenderStepped:Connect(function()
             if rootPart then
                 local pos = target:IsA("Model") and target:GetPivot().Position or target.Position
                 local distance = (rootPart.Position - pos).Magnitude
-                -- 5000미터 (스터드 기준 대략 5000 * 3.5 = 17500 스터드 이내 또는 거리 환산)
-                if distance < 20000 then 
+                
+                -- 정확히 10000 Stud 이내 범위 설정
+                if distance < 10000 then 
                     local distMeters = math.floor(distance / 3.5)
-                    data.Label.Text = "✨ " .. target.Name .. " (" .. distMeters .. "m)"
+                    data.Label.Text = "✨ " .. target.Name .. " (" .. math.floor(distance) .. " Studs / " .. distMeters .. "m)"
                 else
                     removeESP(target)
                 end
@@ -107,15 +108,15 @@ _G.RideAPetRareEggESPConnection = RunService.RenderStepped:Connect(function()
         end
     end
 
-    -- 새로운 희귀 알 탐색 (cherub, solaris, blackhole 만 엄선)
+    -- 새로운 희귀 알 탐색 (cherub, solaris, blackhole)
     for _, obj in pairs(Workspace:GetDescendants()) do
         if obj:IsA("Model") or obj:IsA("BasePart") then
             local lowerName = string.lower(obj.Name)
             
-            -- 지정된 3가지 알 이름 중 하나가 포함되어 있는지 확인
+            -- 지정된 3가지 희귀 알 이름 필터링
             if string.find(lowerName, "cherub") or string.find(lowerName, "solaris") or string.find(lowerName, "blackhole") then
                 
-                -- 플레이어 캐릭터 내부가 아닐 때만 필터링
+                -- 플레이어 캐릭터 내부가 아닐 때만 예외 처리
                 local isPlayer = false
                 for _, p in ipairs(Players:GetPlayers()) do
                     if p.Character and obj:IsDescendantOf(p.Character) then
@@ -138,14 +139,14 @@ _G.RideAPetRareEggESPConnection = RunService.RenderStepped:Connect(function()
                             local pos = obj:IsA("Model") and obj:GetPivot().Position or obj.Position
                             local distance = (rootPart.Position - pos).Magnitude
                             
-                            -- 5000미터 범위 (스터드 환산 약 17500 이내)
-                            if distance < 20000 then
+                            -- 10000 Stud 범위 조건
+                            if distance < 10000 then
                                 local targetAdornee = obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildOfClass("BasePart")) or obj
                                 
                                 if targetAdornee then
                                     local bill = Instance.new("BillboardGui")
-                                    bill.Name = "RareEggESP_Tag"
-                                    bill.Size = UDim2.new(0, 200, 0, 35)
+                                    bill.Name = "Rare10kESP_Tag"
+                                    bill.Size = UDim2.new(0, 240, 0, 40)
                                     bill.AlwaysOnTop = true
                                     bill.Adornee = targetAdornee
                                     bill.StudsOffset = Vector3.new(0, 3, 0)
@@ -154,10 +155,10 @@ _G.RideAPetRareEggESPConnection = RunService.RenderStepped:Connect(function()
                                     local textLabel = Instance.new("TextLabel")
                                     textLabel.Size = UDim2.new(1, 0, 1, 0)
                                     textLabel.BackgroundTransparency = 1
-                                    textLabel.TextColor3 = Color3.fromRGB(0, 255, 255) -- 빛나는 하늘색으로 희귀 알 느낌 연출
+                                    textLabel.TextColor3 = Color3.fromRGB(0, 255, 255) -- 반짝이는 하늘색
                                     textLabel.TextStrokeTransparency = 0
                                     textLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-                                    textLabel.TextSize = 14
+                                    textLabel.TextSize = 13
                                     textLabel.Font = Enum.Font.GothamBold
                                     textLabel.Parent = bill
                                     
@@ -172,4 +173,4 @@ _G.RideAPetRareEggESPConnection = RunService.RenderStepped:Connect(function()
     end
 end)
 
-print("Cherub, Solaris, Blackhole 전용 5000m ESP 스크립트 로드 완료!")
+print("Cherub, Solaris, Blackhole 10000 Stud ESP 로드 완료!")
