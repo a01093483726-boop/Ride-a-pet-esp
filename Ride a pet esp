@@ -5,20 +5,20 @@ local CoreGui = game:GetService("CoreGui")
 local LocalPlayer = Players.LocalPlayer
 
 -- 기존에 실행 중이던 ESP 연결 및 GUI 청소
-if _G.RideAPet10kRareESPConnection then
-    _G.RideAPet10kRareESPConnection:Disconnect()
-    _G.RideAPet10kRareESPConnection = nil
+if _G.RideAPet5kRareESPConnection then
+    _G.RideAPet5kRareESPConnection:Disconnect()
+    _G.RideAPet5kRareESPConnection = nil
 end
 
 pcall(function()
-    if CoreGui:FindFirstChild("RideAPet10kRareESPContainer") then
-        CoreGui.RideAPet10kRareESPContainer:Destroy()
+    if CoreGui:FindFirstChild("RideAPet5kRareESPContainer") then
+        CoreGui.RideAPet5kRareESPContainer:Destroy()
     end
 end)
 
 -- 죽어도 안 사라지게 CoreGui 및 ResetOnSpawn 처리
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "RideAPet10kRareESPContainer"
+ScreenGui.Name = "RideAPet5kRareESPContainer"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = CoreGui
 
@@ -29,7 +29,7 @@ toggleButton.Position = UDim2.new(0.82, 0, 0.12, 0)
 toggleButton.BackgroundColor3 = Color3.fromRGB(80, 20, 20)
 toggleButton.BorderSizePixel = 2
 toggleButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
-toggleButton.Text = "10000 Stud 희귀알: OFF"
+toggleButton.Text = "5000 Stud 희귀알: OFF"
 toggleButton.TextColor3 = Color3.fromRGB(255, 60, 60)
 toggleButton.TextSize = 11
 toggleButton.Font = Enum.Font.GothamBold
@@ -68,21 +68,21 @@ end
 toggleButton.MouseButton1Click:Connect(function()
     isESPOn = not isESPOn
     if isESPOn then
-        toggleButton.Text = "10000 Stud 희귀알: ON\n(Cherub/Solaris/Blackhole)"
+        toggleButton.Text = "5000 Stud 희귀알: ON\n(Cherub/Solaris/Blackhole)"
         toggleButton.TextColor3 = Color3.fromRGB(60, 255, 60)
         toggleButton.BackgroundColor3 = Color3.fromRGB(20, 80, 20)
-        print("10000 Stud 희귀알 ESP 켜짐")
+        print("5000 Stud 희귀알 ESP 켜짐")
     else
-        toggleButton.Text = "10000 Stud 희귀알: OFF"
+        toggleButton.Text = "5000 Stud 희귀알: OFF"
         toggleButton.TextColor3 = Color3.fromRGB(255, 60, 60)
         toggleButton.BackgroundColor3 = Color3.fromRGB(80, 20, 20)
         clearAllESP()
-        print("10000 Stud 희귀알 ESP 꺼짐")
+        print("5000 Stud 희귀알 ESP 꺼짐")
     end
 end)
 
--- [2] 매 프레임 cherub, solaris, blackhole 알을 10000 Stud 범위 내에서 정밀 탐색
-_G.RideAPet10kRareESPConnection = RunService.RenderStepped:Connect(function()
+-- [2] 매 프레임 cherub, solaris, blackhole 알을 5000 Stud 범위 내에서 탐색
+_G.RideAPet5kRareESPConnection = RunService.RenderStepped:Connect(function()
     if not isESPOn then return end
 
     local char = LocalPlayer.Character
@@ -97,10 +97,10 @@ _G.RideAPet10kRareESPConnection = RunService.RenderStepped:Connect(function()
                 local pos = target:IsA("Model") and target:GetPivot().Position or target.Position
                 local distance = (rootPart.Position - pos).Magnitude
                 
-                -- 정확히 10000 Stud 이내 범위 설정
-                if distance < 10000 then 
+                -- 정확히 5000 Stud 이내 범위 설정
+                if distance < 5000 then 
                     local distMeters = math.floor(distance / 3.5)
-                    data.Label.Text = "✨ " .. target.Name .. " (" .. math.floor(distance) .. " Studs / " .. distMeters .. "m)"
+                    data.Label.Text = "✨ " .. target.Name .. " (" .. math.floor(distance) .. " Studs)"
                 else
                     removeESP(target)
                 end
@@ -139,14 +139,14 @@ _G.RideAPet10kRareESPConnection = RunService.RenderStepped:Connect(function()
                             local pos = obj:IsA("Model") and obj:GetPivot().Position or obj.Position
                             local distance = (rootPart.Position - pos).Magnitude
                             
-                            -- 10000 Stud 범위 조건
-                            if distance < 10000 then
+                            -- 5000 Stud 범위 조건
+                            if distance < 5000 then
                                 local targetAdornee = obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildOfClass("BasePart")) or obj
                                 
                                 if targetAdornee then
                                     local bill = Instance.new("BillboardGui")
-                                    bill.Name = "Rare10kESP_Tag"
-                                    bill.Size = UDim2.new(0, 240, 0, 40)
+                                    bill.Name = "Rare5kESP_Tag"
+                                    bill.Size = UDim2.new(0, 220, 0, 40)
                                     bill.AlwaysOnTop = true
                                     bill.Adornee = targetAdornee
                                     bill.StudsOffset = Vector3.new(0, 3, 0)
@@ -155,7 +155,7 @@ _G.RideAPet10kRareESPConnection = RunService.RenderStepped:Connect(function()
                                     local textLabel = Instance.new("TextLabel")
                                     textLabel.Size = UDim2.new(1, 0, 1, 0)
                                     textLabel.BackgroundTransparency = 1
-                                    textLabel.TextColor3 = Color3.fromRGB(0, 255, 255) -- 반짝이는 하늘색
+                                    textLabel.TextColor3 = Color3.fromRGB(0, 255, 255) -- 하늘색
                                     textLabel.TextStrokeTransparency = 0
                                     textLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
                                     textLabel.TextSize = 13
@@ -173,4 +173,4 @@ _G.RideAPet10kRareESPConnection = RunService.RenderStepped:Connect(function()
     end
 end)
 
-print("Cherub, Solaris, Blackhole 10000 Stud ESP 로드 완료!")
+print("Cherub, Solaris, Blackhole 5000 Stud ESP 로드 완료!")
