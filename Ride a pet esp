@@ -68,7 +68,7 @@ end
 toggleButton.MouseButton1Click:Connect(function()
     isESPOn = not isESPOn
     if isESPOn then
-        toggleButton.Text = "5000 Stud 희귀알: ON\n(Cherub/Solaris/Blackhole/Volcanic)"
+        toggleButton.Text = "5000 Stud 희귀알: ON\n(Cherub/Solaris/Blackhole/Volcanic Egg)"
         toggleButton.TextColor3 = Color3.fromRGB(60, 255, 60)
         toggleButton.BackgroundColor3 = Color3.fromRGB(20, 80, 20)
         print("5000 Stud 희귀알 ESP 켜짐")
@@ -81,7 +81,7 @@ toggleButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- [2] 매 프레임 cherub, solaris, blackhole, volcanic 알을 5000 Stud 범위 내에서 탐색
+-- [2] 매 프레임 cherub, solaris, blackhole, volcanic egg 알을 5000 Stud 범위 내에서 탐색
 _G.RideAPet5kRareESPConnection = RunService.RenderStepped:Connect(function()
     if not isESPOn then return end
 
@@ -107,13 +107,13 @@ _G.RideAPet5kRareESPConnection = RunService.RenderStepped:Connect(function()
         end
     end
 
-    -- 새로운 희귀 알 탐색 (cherub, solaris, blackhole, volcanic)
+    -- 새로운 희귀 알 탐색 (cherub, solaris, blackhole, volcanic egg)
     for _, obj in pairs(Workspace:GetDescendants()) do
         if obj:IsA("Model") or obj:IsA("BasePart") then
             local lowerName = string.lower(obj.Name)
             
-            -- 지정된 4가지 희귀 알 이름 필터링 (volcanic 추가)
-            if string.find(lowerName, "cherub") or string.find(lowerName, "solaris") or string.find(lowerName, "blackhole") or string.find(lowerName, "volcanic") then
+            -- volcanic 대신 volcanic egg 조건으로 변경
+            if string.find(lowerName, "cherub") or string.find(lowerName, "solaris") or string.find(lowerName, "blackhole") or string.find(lowerName, "volcanic egg") then
                 
                 -- 플레이어 캐릭터 내부가 아닐 때만 예외 처리
                 local isPlayer = false
@@ -172,4 +172,4 @@ _G.RideAPet5kRareESPConnection = RunService.RenderStepped:Connect(function()
     end
 end)
 
-print("Cherub, Solaris, Blackhole, Volcanic 5000 Stud ESP 로드 완료!")
+print("Cherub, Solaris, Blackhole, Volcanic Egg 5000 Stud ESP 로드 완료!")
